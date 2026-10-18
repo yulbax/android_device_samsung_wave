@@ -49,6 +49,9 @@ def FullOTA_InstallEnd(info):
   # Remove writing boot.img from script (we do it in updater.sh)
   info.script.script = [cmd for cmd in info.script.script if not "write_raw_image" in cmd]
 
+  if "SYSTEM/bin/wave-sd-links.sh" in info.input_zip.namelist():
+    info.script.AppendExtra('assert(run_program("/tmp/wave-sd-links.sh", "boot") == 0);')
+
   # Run model specify script
   info.script.AppendExtra(
         ('package_extract_file("system/bin/setmodel.sh", "/tmp/setmodel.sh");\n'

@@ -38,6 +38,27 @@ foreign_fs() {
 	fi
 }
 
+if [ "$1" = boot ]; then
+	dir=/tmp/wave_sd_boot
+	/tmp/busybox mkdir -p $dir
+	/tmp/busybox mount -t vfat /dev/block/wave_sd_boot $dir ||
+		fail "Can't mount the boot.img partition, copy boot.img to it yourself"
+	if ! /tmp/busybox cp /tmp/boot.img $dir/boot-new.img ; then
+		/tmp/busybox rm -f $dir/boot-new.img
+		/tmp/busybox umount $dir
+		fail "No room for boot.img on the boot.img partition"
+	fi
+	if /tmp/busybox test -e $dir/boot.img ; then
+		/tmp/busybox rm -f $dir/boot-prev.img
+		/tmp/busybox mv $dir/boot.img $dir/boot-prev.img
+	fi
+	/tmp/busybox mv $dir/boot-new.img $dir/boot.img
+	/tmp/busybox sync
+	/tmp/busybox umount $dir
+	ui_print "boot.img written to the SD card, the old one is boot-prev.img"
+	exit 0
+fi
+
 system=$(fstab_dev /system)
 cache=$(fstab_dev /cache)
 data=$(fstab_dev /data)
