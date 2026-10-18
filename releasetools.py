@@ -29,20 +29,20 @@ def FullOTA_Assertions(info):
 
   info.script.AppendExtra(
        ('package_extract_file("make_ext4fs", "/tmp/make_ext4fs");\n'
-        'set_perm(0, 0, 0777, "/tmp/make_ext4fs");'))
+        'set_metadata("/tmp/make_ext4fs", "uid", 0, "gid", 0, "mode", 0777);'))
   info.script.AppendExtra(
         ('package_extract_file("busybox", "/tmp/busybox");\n'
-         'set_perm(0, 0, 0777, "/tmp/busybox");'))
+         'set_metadata("/tmp/busybox", "uid", 0, "gid", 0, "mode", 0777);'))
   info.script.AppendExtra(
         ('package_extract_file("flash_image", "/tmp/flash_image");\n'
-         'set_perm(0, 0, 0777, "/tmp/flash_image");'))
+         'set_metadata("/tmp/flash_image", "uid", 0, "gid", 0, "mode", 0777);'))
 
   info.script.AppendExtra('package_extract_file("boot.img", "/tmp/boot.img");')
 
   if "SYSTEM/bin/wave-sd-links.sh" in info.input_zip.namelist():
     info.script.AppendExtra(
           ('package_extract_file("system/bin/wave-sd-links.sh", "/tmp/wave-sd-links.sh");\n'
-           'set_perm(0, 0, 0777, "/tmp/wave-sd-links.sh");\n'
+           'set_metadata("/tmp/wave-sd-links.sh", "uid", 0, "gid", 0, "mode", 0777);\n'
            'assert(run_program("/tmp/wave-sd-links.sh") == 0);'))
 
 def FullOTA_InstallEnd(info):
@@ -55,5 +55,5 @@ def FullOTA_InstallEnd(info):
   # Run model specify script
   info.script.AppendExtra(
         ('package_extract_file("system/bin/setmodel.sh", "/tmp/setmodel.sh");\n'
-         'set_perm(0, 0, 0777, "/tmp/setmodel.sh");\n'
+         'set_metadata("/tmp/setmodel.sh", "uid", 0, "gid", 0, "mode", 0777);\n'
          'assert(run_program("/tmp/setmodel.sh") == 0);'))
