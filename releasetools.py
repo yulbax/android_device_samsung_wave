@@ -39,6 +39,12 @@ def FullOTA_Assertions(info):
 
   info.script.AppendExtra('package_extract_file("boot.img", "/tmp/boot.img");')
 
+  if "SYSTEM/bin/wave-sd-links.sh" in info.input_zip.namelist():
+    info.script.AppendExtra(
+          ('package_extract_file("system/bin/wave-sd-links.sh", "/tmp/wave-sd-links.sh");\n'
+           'set_perm(0, 0, 0777, "/tmp/wave-sd-links.sh");\n'
+           'assert(run_program("/tmp/wave-sd-links.sh") == 0);'))
+
 def FullOTA_InstallEnd(info):
   # Remove writing boot.img from script (we do it in updater.sh)
   info.script.script = [cmd for cmd in info.script.script if not "write_raw_image" in cmd]
