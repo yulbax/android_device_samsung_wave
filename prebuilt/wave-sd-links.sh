@@ -19,7 +19,9 @@ fail() {
 }
 
 fstab_dev() {
-	/tmp/busybox awk -v m="$1" '$2 == m { print $1 }' /etc/recovery.fstab
+	/tmp/busybox awk -v m="$1" '
+		$2 == m && $1 ~ /^\/dev\// { print $1 ; exit }
+		$1 == m && $3 ~ /^\/dev\// { print $3 ; exit }' /etc/recovery.fstab
 }
 
 foreign_fs() {
