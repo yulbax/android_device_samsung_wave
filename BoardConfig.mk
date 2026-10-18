@@ -21,7 +21,11 @@
 BOARD_SECOND_CAMERA_DEVICE := /dev/video2
 
 # Kernel Config
+ifeq ($(WAVE_SD_BOOT),true)
+TARGET_KERNEL_CONFIG := wave_sd_defconfig
+else
 TARGET_KERNEL_CONFIG := omni_wave_defconfig
+endif
 
 # FM Radio
 BOARD_HAVE_FM_RADIO := true
@@ -111,7 +115,11 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/wave/recovery/recovery_keys.c
 BOARD_USES_BML_OVER_MTD := true
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/wave/shbootimg.mk
+ifeq ($(WAVE_SD_BOOT),true)
+TARGET_RECOVERY_FSTAB := device/samsung/wave/fstab.wave_sd
+else
 TARGET_RECOVERY_FSTAB := device/samsung/wave/fstab.wave
+endif
 RECOVERY_FSTAB_VERSION := 2
 
 # Boot Animation

@@ -61,12 +61,24 @@ PRODUCT_COPY_FILES += \
 	device/samsung/wave/init.recovery.wave.rc:root/init.recovery.wave.rc \
 	device/samsung/wave/init.recovery.wave2.rc:root/init.recovery.wave2.rc \
 	device/samsung/wave/init.wave.usb.rc:recovery/root/usb.rc \
+	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave.rc \
+	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave2.rc
+
+ifeq ($(WAVE_SD_BOOT),true)
+PRODUCT_COPY_FILES += \
+	device/samsung/wave/fstab.wave_sd:root/fstab.wave \
+	device/samsung/wave/fstab.wave_sd:root/fstab.wave2 \
+	device/samsung/wave/init.wave.storage_sd.rc:root/init.wave.storage.rc \
+	device/samsung/wave/twrp_sd.fstab:recovery/root/etc/twrp.fstab \
+	device/samsung/wave/prebuilt/wave-sd-boot:system/etc/wave-sd-boot
+else
+PRODUCT_COPY_FILES += \
 	device/samsung/wave/fstab.wave:root/fstab.wave \
 	device/samsung/wave/fstab.wave:root/fstab.wave2 \
-	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave.rc \
-	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave2.rc \
-	device/samsung/wave/twrp.fstab:recovery/root/etc/twrp.fstab\
+	device/samsung/wave/init.wave.storage_nand.rc:root/init.wave.storage.rc \
+	device/samsung/wave/twrp.fstab:recovery/root/etc/twrp.fstab \
 	device/samsung/wave/partition.sh:recovery/root/partition.sh
+endif
 
 # Keylayout and Keychars
 PRODUCT_COPY_FILES += \

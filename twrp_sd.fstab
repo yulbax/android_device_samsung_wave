@@ -1,0 +1,5 @@
+/data 		ext4	/dev/block/mmcblk1p4 	length=-16384 flags=backup=1;canbewiped;wipeingui;wipeduringfactoryreset
+/cache		ext4	/dev/block/mmcblk1p2	flags=backup=1;canbewiped;wipeingui;wipeduringfactoryreset
+/system	ext4	/dev/block/mmcblk1p3	flags=backup=1;canbewiped;wipeingui
+
+/external_sd	vfat	/dev/block/mmcblk1p1	flags=display="External SD Card";storage;removable
