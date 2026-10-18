@@ -122,6 +122,7 @@ else
 TARGET_RECOVERY_FSTAB := device/samsung/wave/fstab.wave
 endif
 RECOVERY_FSTAB_VERSION := 2
+TARGET_NO_SEPARATE_RECOVERY := true
 
 # Boot Animation
 TARGET_BOOTANIMATION_PRELOAD := true
