@@ -25,7 +25,7 @@ fstab_dev() {
 }
 
 foreign_fs() {
-	if /tmp/busybox dd if=$1 bs=1 skip=1080 count=2 2>/dev/null | /tmp/busybox od -A n -t x1 | /tmp/busybox grep -q "53 ef" ; then
+	if /tmp/busybox dd if=$1 bs=1 skip=1080 count=2 2>/dev/null | /tmp/busybox od -b | /tmp/busybox grep -q " 123 357" ; then
 		return
 	fi
 	case "$(/tmp/busybox dd if=$1 bs=1 skip=3 count=8 2>/dev/null)" in
@@ -37,6 +37,38 @@ foreign_fs() {
 		echo FAT
 	fi
 }
+
+is_f2fs() {
+	/tmp/busybox dd if=$1 bs=1 skip=1024 count=4 2>/dev/null | /tmp/busybox od -b | /tmp/busybox grep -q " 020 040 365 362"
+}
+
+if [ "$1" = data ]; then
+	data=$(/tmp/busybox readlink /dev/block/wave_sd_data)
+	cache=$(/tmp/busybox readlink /dev/block/wave_sd_cache)
+	if is_f2fs $data ; then
+		ui_print "Data is f2fs already, keeping it"
+		exit 0
+	fi
+	fs=$(foreign_fs $data)
+	/tmp/busybox test -z "$fs" || fail "$data holds $fs, refusing to format it, check wave_sd.conf"
+	zip=$(/tmp/busybox ps | /tmp/busybox grep -v grep | /tmp/busybox grep -o -E "/tmp/(updater|update_binary) .*" | /tmp/busybox cut -d " " -f 4)
+	zip=$(/tmp/busybox readlink -f "$zip")
+	/tmp/busybox test -n "$zip" || fail "Can't tell where this zip is, nothing was changed"
+	for m in $(/tmp/busybox awk -v d=$data '$1 == d { print $2 }' /proc/mounts) ; do
+		case "$zip" in
+			$m/*) fail "Data must become f2fs, but this zip is on it. Copy the zip to the External SD storage and install it from there" ;;
+		esac
+	done
+	ui_print "Formatting data as f2fs (it was not), and cache"
+	for m in $(/tmp/busybox awk -v d=$data -v c=$cache '$1 == d || $1 == c { print $2 }' /proc/mounts | /tmp/busybox sort -r) ; do
+		/tmp/busybox umount $m
+	done
+	/tmp/busybox grep -q "^$data " /proc/mounts && fail "Can't unmount data, nothing was changed"
+	/tmp/mkfs.f2fs $data >/dev/null || fail "mkfs.f2fs failed on $data"
+	/tmp/busybox grep -q "^$cache " /proc/mounts || /tmp/make_ext4fs $cache >/dev/null ||
+		ui_print "Couldn't format cache, wipe it from the recovery"
+	exit 0
+fi
 
 if [ "$1" = boot ]; then
 	dir=/tmp/wave_sd_boot
