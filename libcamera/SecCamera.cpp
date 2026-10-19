@@ -841,8 +841,12 @@ int SecCamera::startPreview(void)
     }
 
 #ifdef HAVE_FLASH
-    ret = fimc_v4l2_s_ctrl(m_cam_fd, V4L2_CID_CAMERA_FLASH_MODE, m_params->flash_mode);
-    CHECK(ret);
+    if (m_camera_id == CAMERA_ID_BACK &&
+        m_params->flash_mode > FLASH_MODE_BASE &&
+        m_params->flash_mode < FLASH_MODE_MAX) {
+        ret = fimc_v4l2_s_ctrl(m_cam_fd, V4L2_CID_CAMERA_FLASH_MODE, m_params->flash_mode);
+        CHECK(ret);
+    }
 #endif
 
     // It is a delay for a new frame, not to show the previous bigger ugly picture frame.
