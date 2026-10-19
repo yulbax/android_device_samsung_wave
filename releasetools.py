@@ -44,10 +44,7 @@ def FullOTA_Assertions(info):
           ('package_extract_file("system/bin/wave-sd-links.sh", "/tmp/wave-sd-links.sh");\n'
            'set_metadata("/tmp/wave-sd-links.sh", "uid", 0, "gid", 0, "mode", 0777);\n'
            'assert(run_program("/tmp/wave-sd-links.sh") == 0);'))
-    info.script.AppendExtra(
-          ('package_extract_file("system/bin/mkfs.f2fs", "/tmp/mkfs.f2fs");\n'
-           'set_metadata("/tmp/mkfs.f2fs", "uid", 0, "gid", 0, "mode", 0777);\n'
-           'assert(run_program("/tmp/wave-sd-links.sh", "data") == 0);'))
+    info.script.AppendExtra('assert(run_program("/tmp/wave-sd-links.sh", "data") == 0);')
 
 def FullOTA_InstallEnd(info):
   # Remove writing boot.img from script (we do it in updater.sh)
