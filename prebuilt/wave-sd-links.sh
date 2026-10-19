@@ -55,13 +55,19 @@ if [ "$1" = data ]; then
 fi
 
 if [ "$1" = boot ]; then
-	dir=/tmp/wave_sd_boot
-	/tmp/busybox mkdir -p $dir
-	/tmp/busybox mount -t vfat /dev/block/wave_sd_boot $dir ||
-		fail "Can't mount the boot.img partition, copy boot.img to it yourself"
+	part=$(/tmp/busybox readlink /dev/block/wave_sd_boot)
+	dir=$(/tmp/busybox awk -v d=$part '$1 == d { print $2 ; exit }' /proc/mounts)
+	mounted=
+	if [ -z "$dir" ]; then
+		dir=/tmp/wave_sd_boot
+		/tmp/busybox mkdir -p $dir
+		/tmp/busybox mount -t vfat $part $dir ||
+			fail "Can't mount the boot.img partition, copy boot.img to it yourself"
+		mounted=1
+	fi
 	if ! /tmp/busybox cp /tmp/boot.img $dir/boot-new.img ; then
 		/tmp/busybox rm -f $dir/boot-new.img
-		/tmp/busybox umount $dir
+		[ -n "$mounted" ] && /tmp/busybox umount $dir
 		fail "No room for boot.img on the boot.img partition"
 	fi
 	if /tmp/busybox test -e $dir/boot.img ; then
@@ -70,7 +76,7 @@ if [ "$1" = boot ]; then
 	fi
 	/tmp/busybox mv $dir/boot-new.img $dir/boot.img
 	/tmp/busybox sync
-	/tmp/busybox umount $dir
+	[ -n "$mounted" ] && /tmp/busybox umount $dir
 	ui_print "boot.img written to the SD card, the old one is boot-prev.img"
 	exit 0
 fi

@@ -2,4 +2,5 @@
 /cache		ext4	/dev/block/wave_sd_cache	flags=backup=1;canbewiped;wipeingui;wipeduringfactoryreset
 /system	ext4	/dev/block/wave_sd_system	flags=backup=1;canbewiped;wipeingui
 
-/external_sd	vfat	/dev/block/wave_sd_storage	flags=display="External SD Card";storage;removable
+/boot		vfat	/dev/block/wave_sd_boot		flags=display="Boot (boot.img)";backup=1
+/external_sd	vfat	/dev/block/wave_sd_storage	flags=display="External SD Card";storage;wipeingui;removable
