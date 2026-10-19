@@ -384,6 +384,7 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
 
     if (w->get_min_undequeued_buffer_count(w, &min_bufs)) {
         ALOGE("%s: could not retrieve min undequeued buffer count", __func__);
+        mPreviewLock.unlock();
         return INVALID_OPERATION;
     }
 
@@ -395,6 +396,7 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
     ALOGV("%s: setting buffer count to %d", __func__, kBufferCount);
     if (w->set_buffer_count(w, kBufferCount)) {
         ALOGE("%s: could not set buffer count", __func__);
+        mPreviewLock.unlock();
         return INVALID_OPERATION;
     }
 
@@ -408,6 +410,7 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
 
     if (w->set_usage(w, GRALLOC_USAGE_SW_WRITE_OFTEN)) {
         ALOGE("%s: could not set usage on gralloc buffer", __func__);
+        mPreviewLock.unlock();
         return INVALID_OPERATION;
     }
 
@@ -416,6 +419,7 @@ status_t CameraHardwareSec::setPreviewWindow(preview_stream_ops *w)
                                 hal_pixel_format)) {
         ALOGE("%s: could not set buffers geometry to %s",
              __func__, str_preview_format);
+        mPreviewLock.unlock();
         return INVALID_OPERATION;
     }
 
@@ -1410,7 +1414,7 @@ status_t CameraHardwareSec::setParameters(const CameraParameters& params)
                          mPreviewWindow->set_buffers_geometry);
                     mPreviewWindow->set_buffers_geometry(mPreviewWindow,
                                                          new_preview_width, new_preview_height,
-                                                         new_preview_format);
+                                                         HAL_PIXEL_FORMAT_YV12);
                     ALOGV("%s: DONE mPreviewWindow (%p) set_buffers_geometry", __func__, mPreviewWindow);
                 }
 
