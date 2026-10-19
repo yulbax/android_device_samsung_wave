@@ -35,4 +35,5 @@ PRODUCT_MANUFACTURER := samsung
 PRODUCT_MODEL := GT-S8500
 
 PRODUCT_PACKAGES += \
-	Torch
+	Torch \
+	WaveRemovePackages
