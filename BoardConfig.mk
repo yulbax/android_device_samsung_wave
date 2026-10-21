@@ -23,6 +23,7 @@ BOARD_SECOND_CAMERA_DEVICE := /dev/video2
 # Kernel Config
 ifeq ($(WAVE_SD_BOOT),true)
 TARGET_KERNEL_CONFIG := wave_sd_defconfig
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 else
 TARGET_KERNEL_CONFIG := omni_wave_defconfig
 endif
