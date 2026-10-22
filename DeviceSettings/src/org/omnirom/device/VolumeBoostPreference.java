@@ -79,11 +79,16 @@ public class VolumeBoostPreference extends DialogPreference implements OnClickLi
 
     private VolumeSeekBar mSeekBars[] = new VolumeSeekBar[8];
 
-    private static final int BOOST_DEFAULT_VALUE = 1;
     private static final int BOOST_MAX_VALUE = 3;
-
-    private static final int MIC_DEFAULT_VALUE = 18;
     private static final int MIC_MAX_VALUE = 31;
+
+    private static int defaultValue(String path) {
+        if (path.endsWith("incall_boost_spk")) return 0;
+        if (path.contains("incall_boost_")) return 1;
+        if (path.endsWith("incall_mic_gain_rcv")) return 9;
+        if (path.endsWith("incall_mic_gain_spk")) return 14;
+        return 18;
+    }
 
     // Track instances to know when to restore original value
     // (when the orientation changes, a new dialog is created before the old one is destroyed)
@@ -149,12 +154,12 @@ public class VolumeBoostPreference extends DialogPreference implements OnClickLi
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         for (int i = 0; i < BOOST_FILE_PATH.length; i++) {
-            int value = sharedPrefs.getInt(BOOST_FILE_PATH[i], BOOST_DEFAULT_VALUE);
+            int value = sharedPrefs.getInt(BOOST_FILE_PATH[i], defaultValue(BOOST_FILE_PATH[i]));
             Utils.writeValue(BOOST_FILE_PATH[i], String.valueOf(value));
         }
 
         for (int i = 0; i < MIC_FILE_PATH.length; i++) {
-            int value = sharedPrefs.getInt(MIC_FILE_PATH[i], MIC_DEFAULT_VALUE);
+            int value = sharedPrefs.getInt(MIC_FILE_PATH[i], defaultValue(MIC_FILE_PATH[i]));
             Utils.writeValue(MIC_FILE_PATH[i], String.valueOf(value));
         }
     }
@@ -194,7 +199,7 @@ public class VolumeBoostPreference extends DialogPreference implements OnClickLi
 
             // Read original value
             SharedPreferences sharedPreferences = getSharedPreferences();
-            mOriginal = sharedPreferences.getInt(mFilePath, BOOST_DEFAULT_VALUE);
+            mOriginal = sharedPreferences.getInt(mFilePath, defaultValue(mFilePath));
 
             seekBar.setMax(BOOST_MAX_VALUE);
             reset();
@@ -254,7 +259,7 @@ public class VolumeBoostPreference extends DialogPreference implements OnClickLi
 
             // Read original value
             SharedPreferences sharedPreferences = getSharedPreferences();
-            mOriginal = sharedPreferences.getInt(mFilePath, MIC_DEFAULT_VALUE);
+            mOriginal = sharedPreferences.getInt(mFilePath, defaultValue(mFilePath));
 
             seekBar.setMax(MIC_MAX_VALUE);
             reset();
@@ -279,10 +284,10 @@ public class VolumeBoostPreference extends DialogPreference implements OnClickLi
         switch(v.getId()) {
             case R.id.volume_reset:
                 for (int i = 0; i < BOOST_FILE_PATH.length; i++) {
-                    mSeekBars[i].resetDefault(BOOST_FILE_PATH[i], BOOST_DEFAULT_VALUE);
+                    mSeekBars[i].resetDefault(BOOST_FILE_PATH[i], defaultValue(BOOST_FILE_PATH[i]));
                 }
                 for (int i = 0; i < MIC_FILE_PATH.length; i++) {
-                    mSeekBars[BOOST_FILE_PATH.length + i].resetDefault(MIC_FILE_PATH[i], MIC_DEFAULT_VALUE);
+                    mSeekBars[BOOST_FILE_PATH.length + i].resetDefault(MIC_FILE_PATH[i], defaultValue(MIC_FILE_PATH[i]));
                 }
                 break;
         }
