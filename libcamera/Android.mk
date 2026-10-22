@@ -1,3 +1,4 @@
+ifeq ($(WAVE_LEGACY_CAMERA_HAL),true)
 ifneq ($(TARGET_PROVIDES_LIBCAMERA),true)
 
 LOCAL_PATH:= $(call my-dir)
@@ -33,4 +34,5 @@ endif
 
 include $(BUILD_SHARED_LIBRARY)
 
+endif
 endif

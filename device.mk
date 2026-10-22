@@ -61,12 +61,28 @@ PRODUCT_COPY_FILES += \
 	device/samsung/wave/init.recovery.wave.rc:root/init.recovery.wave.rc \
 	device/samsung/wave/init.recovery.wave2.rc:root/init.recovery.wave2.rc \
 	device/samsung/wave/init.wave.usb.rc:recovery/root/usb.rc \
+	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave.rc \
+	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave2.rc
+
+ifeq ($(WAVE_SD_BOOT),true)
+PRODUCT_COPY_FILES += \
+	device/samsung/wave/fstab.wave_sd:root/fstab.wave \
+	device/samsung/wave/fstab.wave_sd:root/fstab.wave2 \
+	device/samsung/wave/init.wave.storage_sd.rc:root/init.wave.storage.rc \
+	device/samsung/wave/twrp_sd.fstab:recovery/root/etc/twrp.fstab \
+	device/samsung/wave/recovery/wave_sd_prepare.sh:recovery/root/sbin/wave_sd_prepare.sh \
+	device/samsung/wave/prebuilt/wave-sd-boot:system/etc/wave-sd-boot \
+	device/samsung/wave/prebuilt/wave-sd-links.sh:system/bin/wave-sd-links.sh \
+	device/samsung/wave/prebuilt/wave_sd.conf:system/etc/wave_sd.conf.example \
+	device/samsung/wave/prebuilt/powervr.ini:system/etc/powervr.ini
+else
+PRODUCT_COPY_FILES += \
 	device/samsung/wave/fstab.wave:root/fstab.wave \
 	device/samsung/wave/fstab.wave:root/fstab.wave2 \
-	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave.rc \
-	device/samsung/wave/ueventd.wave.rc:root/ueventd.wave2.rc \
-	device/samsung/wave/twrp.fstab:recovery/root/etc/twrp.fstab\
+	device/samsung/wave/init.wave.storage_nand.rc:root/init.wave.storage.rc \
+	device/samsung/wave/twrp.fstab:recovery/root/etc/twrp.fstab \
 	device/samsung/wave/partition.sh:recovery/root/partition.sh
+endif
 
 # Keylayout and Keychars
 PRODUCT_COPY_FILES += \
@@ -120,7 +136,8 @@ PRODUCT_PACKAGES += \
 
 # Libs
 PRODUCT_PACKAGES += \
-	libstagefrighthw
+	libstagefrighthw \
+	libjemalloc_override
 
 # Bluetooth MAC Address
 PRODUCT_PACKAGES += \
@@ -185,9 +202,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.checkjni=0 \
     dalvik.vm.checkjni=false
 
-# Reduce background apps limit to 12 on low-tier devices
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sys.fw.bg_apps_limit=12
+    ro.sys.fw.bg_apps_limit=30
 
 # Set max background services
 PRODUCT_PROPERTY_OVERRIDES += \

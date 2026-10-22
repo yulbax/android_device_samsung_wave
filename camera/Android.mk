@@ -1,0 +1,16 @@
+ifneq ($(WAVE_LEGACY_CAMERA_HAL),true)
+
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := camera.wave
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := prebuilt/camera.wave.so
+LOCAL_STRIP_MODULE := false
+
+include $(BUILD_PREBUILT)
+
+endif

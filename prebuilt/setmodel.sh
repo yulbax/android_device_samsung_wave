@@ -28,7 +28,17 @@ if /tmp/busybox grep -q wave2 /proc/cpuinfo ; then
 	/tmp/busybox rm /system/vendor/firmware/bcm4329_s8530.hcd
 fi
 
-ui_print "Flashing boot.img"
-/tmp/flash_image boot /tmp/boot.img
+if /tmp/busybox test -e /system/etc/wave-sd-boot ; then
+	ui_print "Copying boot.img to the SD card"
+	sd_boot=/tmp/sd_boot
+	/tmp/busybox mkdir -p $sd_boot
+	/tmp/busybox mount -t vfat /dev/block/wave_sd_boot $sd_boot || exit 1
+	/tmp/busybox cp /tmp/boot.img $sd_boot/boot.img || exit 1
+	/tmp/busybox sync
+	/tmp/busybox umount $sd_boot
+else
+	ui_print "Flashing boot.img"
+	/tmp/flash_image boot /tmp/boot.img
+fi
 
 

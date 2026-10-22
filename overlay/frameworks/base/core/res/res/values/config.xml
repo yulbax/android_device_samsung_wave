@@ -139,4 +139,10 @@
          For example, a device with Home, Back and Menu keys would set this
          config to 7. -->
     <integer name="config_deviceHardwareKeys">39</integer>
+
+    <string name="db_wal_sync_mode">NORMAL</string>
+
+    <bool name="config_dreamsEnabledByDefault">false</bool>
+    <bool name="config_dreamsActivatedOnDockByDefault">false</bool>
+
 </resources>

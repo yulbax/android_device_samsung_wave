@@ -21,7 +21,12 @@
 BOARD_SECOND_CAMERA_DEVICE := /dev/video2
 
 # Kernel Config
+ifeq ($(WAVE_SD_BOOT),true)
+TARGET_KERNEL_CONFIG := wave_sd_defconfig
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+else
 TARGET_KERNEL_CONFIG := omni_wave_defconfig
+endif
 
 # FM Radio
 BOARD_HAVE_FM_RADIO := true
@@ -62,6 +67,10 @@ endif
 BOARD_CAMERA_HAVE_ISO := true
 BOARD_CAMERA_HAVE_FLASH := true
 
+BOARD_THUMBNAIL_PREFER_HARDWARE_CODECS := true
+
+BOARD_MEDIASERVER_USES_JEMALLOC := true
+
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
@@ -76,7 +85,11 @@ BOARD_KERNEL_BASE := 0x32000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_CMDLINE := console=ttyFIQ0,115200 init=/init no_console_suspend
 
+ifeq ($(WAVE_SD_BOOT),true)
+BOARD_BOOTIMAGE_PARTITION_SIZE := 9437184
+else
 BOARD_BOOTIMAGE_PARTITION_SIZE := 7864320
+endif
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 629145600
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 419430400
 BOARD_FLASH_BLOCK_SIZE := 4096
@@ -107,12 +120,21 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/s3c-usbgadget/gadget/l
 
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/wave/recovery/recovery_keys.c
 BOARD_USES_BML_OVER_MTD := true
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/wave/shbootimg.mk
+ifeq ($(WAVE_SD_BOOT),true)
+TARGET_RECOVERY_FSTAB := device/samsung/wave/fstab.wave_sd
+else
 TARGET_RECOVERY_FSTAB := device/samsung/wave/fstab.wave
+endif
 RECOVERY_FSTAB_VERSION := 2
+ifneq ($(wildcard bootable/recovery-twrp/Android.mk),)
+RECOVERY_VARIANT := twrp
+endif
+TARGET_NO_SEPARATE_RECOVERY := true
 
 # Boot Animation
 TARGET_BOOTANIMATION_PRELOAD := true
@@ -166,6 +188,7 @@ BOARD_SEPOLICY_UNION += \
 
 # TWRP Flags
 DEVICE_RESOLUTION := 480x800
+TW_THEME := portrait_mdpi
 TW_NO_BATT_PERCENT := true
 TW_NO_REBOOT_BOOTLOADER := true
 RECOVERY_SDCARD_ON_DATA := true
