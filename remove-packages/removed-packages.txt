@@ -1,0 +1,2 @@
+Packages of CyanogenMod left out of this build (device/samsung/wave/remove-packages):
+CMUpdater VoicePlus
