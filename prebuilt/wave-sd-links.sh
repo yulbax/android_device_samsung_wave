@@ -44,40 +44,30 @@ is_f2fs() {
 
 if [ "$1" = data ]; then
 	data=$(/tmp/busybox readlink /dev/block/wave_sd_data)
-	cache=$(/tmp/busybox readlink /dev/block/wave_sd_cache)
 	if is_f2fs $data ; then
-		ui_print "Data is f2fs already, keeping it"
+		ui_print "Data is f2fs"
 		exit 0
 	fi
-	fs=$(foreign_fs $data)
-	/tmp/busybox test -z "$fs" || fail "$data holds $fs, refusing to format it, check wave_sd.conf"
-	zip=$(/tmp/busybox ps | /tmp/busybox grep -v grep | /tmp/busybox grep -o -E "/tmp/(updater|update_binary) .*" | /tmp/busybox cut -d " " -f 4)
-	zip=$(/tmp/busybox readlink -f "$zip")
-	/tmp/busybox test -n "$zip" || fail "Can't tell where this zip is, nothing was changed"
-	for m in $(/tmp/busybox awk -v d=$data '$1 == d { print $2 }' /proc/mounts) ; do
-		case "$zip" in
-			$m/*) fail "Data must become f2fs, but this zip is on it. Copy the zip to the External SD storage and install it from there" ;;
-		esac
-	done
-	ui_print "Formatting data as f2fs (it was not), and cache"
-	for m in $(/tmp/busybox awk -v d=$data -v c=$cache '$1 == d || $1 == c { print $2 }' /proc/mounts | /tmp/busybox sort -r) ; do
-		/tmp/busybox umount $m
-	done
-	/tmp/busybox grep -q "^$data " /proc/mounts && fail "Can't unmount data, nothing was changed"
-	/tmp/mkfs.f2fs $data >/dev/null || fail "mkfs.f2fs failed on $data"
-	/tmp/busybox grep -q "^$cache " /proc/mounts || /tmp/make_ext4fs $cache >/dev/null ||
-		ui_print "Couldn't format cache, wipe it from the recovery"
-	exit 0
+	ui_print "Data ($data) is not f2fs, Android can't mount it."
+	ui_print "In TWRP of this build: Advanced > Prepare SD Card,"
+	ui_print "then install this zip from the External SD Card."
+	fail "Nothing was changed"
 fi
 
 if [ "$1" = boot ]; then
-	dir=/tmp/wave_sd_boot
-	/tmp/busybox mkdir -p $dir
-	/tmp/busybox mount -t vfat /dev/block/wave_sd_boot $dir ||
-		fail "Can't mount the boot.img partition, copy boot.img to it yourself"
+	part=$(/tmp/busybox readlink /dev/block/wave_sd_boot)
+	dir=$(/tmp/busybox awk -v d=$part '$1 == d { print $2 ; exit }' /proc/mounts)
+	mounted=
+	if [ -z "$dir" ]; then
+		dir=/tmp/wave_sd_boot
+		/tmp/busybox mkdir -p $dir
+		/tmp/busybox mount -t vfat $part $dir ||
+			fail "Can't mount the boot.img partition, copy boot.img to it yourself"
+		mounted=1
+	fi
 	if ! /tmp/busybox cp /tmp/boot.img $dir/boot-new.img ; then
 		/tmp/busybox rm -f $dir/boot-new.img
-		/tmp/busybox umount $dir
+		[ -n "$mounted" ] && /tmp/busybox umount $dir
 		fail "No room for boot.img on the boot.img partition"
 	fi
 	if /tmp/busybox test -e $dir/boot.img ; then
@@ -86,7 +76,7 @@ if [ "$1" = boot ]; then
 	fi
 	/tmp/busybox mv $dir/boot-new.img $dir/boot.img
 	/tmp/busybox sync
-	/tmp/busybox umount $dir
+	[ -n "$mounted" ] && /tmp/busybox umount $dir
 	ui_print "boot.img written to the SD card, the old one is boot-prev.img"
 	exit 0
 fi

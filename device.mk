@@ -70,6 +70,7 @@ PRODUCT_COPY_FILES += \
 	device/samsung/wave/fstab.wave_sd:root/fstab.wave2 \
 	device/samsung/wave/init.wave.storage_sd.rc:root/init.wave.storage.rc \
 	device/samsung/wave/twrp_sd.fstab:recovery/root/etc/twrp.fstab \
+	device/samsung/wave/recovery/wave_sd_prepare.sh:recovery/root/sbin/wave_sd_prepare.sh \
 	device/samsung/wave/prebuilt/wave-sd-boot:system/etc/wave-sd-boot \
 	device/samsung/wave/prebuilt/wave-sd-links.sh:system/bin/wave-sd-links.sh \
 	device/samsung/wave/prebuilt/wave_sd.conf:system/etc/wave_sd.conf.example
