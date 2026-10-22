@@ -26,4 +26,5 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_wave.mk
+    $(LOCAL_DIR)/omni_wave.mk \
+    $(LOCAL_DIR)/cm.mk
