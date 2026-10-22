@@ -1,0 +1,2 @@
+# Marker for setmodel.sh: this system boots from the microSD card, boot.img
+# goes to its FAT partition instead of the boot partition.

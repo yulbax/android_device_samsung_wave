@@ -1,0 +1,9 @@
+boot							/boot		mtd	defaults								recoveryonly
+
+/dev/block/wave_sd_system				/system		ext4	ro									wait
+/dev/block/wave_sd_cache				/cache		ext4	noatime,nosuid,nodev							wait
+/dev/block/wave_sd_data					/data		ext4	noatime,nodev,nosuid,nomblk_io_submit,errors=panic		wait,encryptable=footer,length=-16384
+
+/devices/platform/s3c-sdhci.2/mmc_host/mmc2 	auto 		auto	defaults								voldmanaged=sdcard1:wave_sd_storage
+
+/dev/block/zram0					none		swap	defaults								zramsize=125829120
