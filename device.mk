@@ -135,7 +135,8 @@ PRODUCT_PACKAGES += \
 
 # Libs
 PRODUCT_PACKAGES += \
-	libstagefrighthw
+	libstagefrighthw \
+	libjemalloc_override
 
 # Bluetooth MAC Address
 PRODUCT_PACKAGES += \
