@@ -160,6 +160,25 @@ on post-fs
     restorecon /sys/devices/virtual/misc/customvoltage/arm_volt
     restorecon /sys/devices/virtual/misc/customvoltage/int_volt
 
+    chown root system /sys/devices/virtual/misc/color_tuning/red_multiplier
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/red_multiplier
+    chown root system /sys/devices/virtual/misc/color_tuning/green_multiplier
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/green_multiplier
+    chown root system /sys/devices/virtual/misc/color_tuning/blue_multiplier
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/blue_multiplier
+    chown root system /sys/devices/virtual/misc/color_tuning/red_v1_offset
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/red_v1_offset
+    chown root system /sys/devices/virtual/misc/color_tuning/green_v1_offset
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/green_v1_offset
+    chown root system /sys/devices/virtual/misc/color_tuning/blue_v1_offset
+    chmod 0664 /sys/devices/virtual/misc/color_tuning/blue_v1_offset
+    restorecon /sys/devices/virtual/misc/color_tuning/red_multiplier
+    restorecon /sys/devices/virtual/misc/color_tuning/green_multiplier
+    restorecon /sys/devices/virtual/misc/color_tuning/blue_multiplier
+    restorecon /sys/devices/virtual/misc/color_tuning/red_v1_offset
+    restorecon /sys/devices/virtual/misc/color_tuning/green_v1_offset
+    restorecon /sys/devices/virtual/misc/color_tuning/blue_v1_offset
+
 # trigger governor change uevent
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
 
